@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            width: 100%;
+            height: 100vh;
+            font-family: sans-serif;
+        }
+        .new{
+            padding-left: 425px;
+            margin-top: 250px;
+            margin-bottom: 250px;
+        }
+        #container{
+            width: 300px;
+            background: linear-gradient(135deg, #00fea0, #5b548a);
+            padding: 25px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #box{
+            display: flex;
+            align-items: center;
+            color: white;
+            gap: 15px;
+            margin-bottom: 10px;
+            margin-right: 80px;
+        }
+        #box img{
+            width: 30px;
+            height: 30px;
+        }
+        #box1 img{
+            width: 120px;
+        }    
+    
+        #box1{
+            color: white;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            font-size: 25px;
+            font-weight: 600;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .textinp{
+            width: 200px;
+            height: 35px;
+            border: none;
+            pad: 7px;
+            border-radius: 5px;
+        } 
+        .search{
+            width: 22px;
+            height: 22px;
+            background-color: white;
+            padding: 8px;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+        }
+        #weather{
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .search:active{
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+     <div class="new">
+        <div id="container">
+            <div id="weather">
+                <input type="text" placeholder="Enter Your City" class="textinp" id="textinput">
+                <img src="/search.png" alt="" class="search" onclick="getWeather()">
+            </div>
+            <div id="searchresult" class="searchresult">
+            </div>
+        </div>
+     </div>
+    <script>
+         async function getWeather(){
+            const city = document.getElementById("textinput").value;
+        const apiKey = "302b7cc75deffd2a3cb9c877d8756c88";
+
+        if(!city){
+            document.getElementById("searchresult").innerHTML=`<p>Please enter city name</p>`
+            return;
+        }
+        const weatherurl=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+
+        try{
+            const response=await fetch(weatherurl)
+            const data=await response.json();
+            if(data.cod!==200){
+                document.getElementById("searchresult").innerHTML=`<p>${data.messege}</p>`
+                
+            }
+            const iconCode=data.weather[0].icon;
+            const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`
+            document.getElementById("searchresult").innerHTML=`<div id="box1">
+                <img src="${iconUrl}" alt="${data.weather[0].description}"  >
+                <span >${data.name}</span>
+            </div>
+            <div id="box">
+                <img src="/temp.png" alt=""  >
+                <span style="display: block;">Temperature: ${data.main.temp} C</span>
+            </div>
+            <div id="box">
+                <img src="/wind.png" alt="" >
+                <span>Wind Speed: ${data.wind.speed} m/s</span>
+            </div>
+            <div id="box">
+                <img src="/cloudy.png" alt="" >
+                <span>Weather: ${data.weather[0].description}</span>
+            </div>`
+        }
+        catch(error){
+            document.getElementById("searchresult").innerHTML=`<p>Error fetching data.</p>`
+
+        }
+         }
+    </script> 
+</body>
+</html>
